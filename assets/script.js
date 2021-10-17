@@ -5,35 +5,38 @@ var promptSection = document.querySelector("#promptSection");
 var inputSection = document.querySelector("#inputSection");
 var resultSection = document.querySelector("#resultSection");
 var startButtonEl= document.querySelector("#startButton");
+var answersList;
 
 
 //global variables
 var timeCount = 75;
 var questionCounter = 1;
+var incorectMessage = "<h3 id = 'answerMessage'> Wrong Answer Selected!</h3>";
+var correctMessage = "<h3 = 'answerMessage'> Correct Answer Selected!</h3>";
 var questions = {
     questionOne : {
-        questionText: "<h1> This is a question #1!</h1>",
-        answers: "<ul><li>1.Answer 1</li><li>2.Answer 2</li><li>3.Answer 3</li><li>4.Answer4</li></ul>",
+        questionText: "<h1> What does HTML stand for?</h1>",
+        answers: "<ul><li id = 'correct'>Hypertext Markup Language.</li><li id = 'incorrect'>Hyperlinks and Markup Language.</li><li id = 'incorrect'>Hyper Tool Markup Language.</li><li id = 'incorrect'>None of the above.</li></ul>",
         step: 1
     },
     questionTwo: {
-        questionText: "<h1> This is a question #2!</h1>",
-        answers: "<ul><li>1.Answer 1</li><li>2.Answer 2</li><li>3.Answer 3</li><li>4.Answer4</li></ul>",
+        questionText: "<h1> Where in HTML is the correct place to insert a JavaScript?</h1>",
+        answers: "<ul><li id = 'correct'>both the head and body section are correct.</li><li id = 'incorrect'>The head section.</li><li id = 'incorrect'>The body section.</li><li id = 'incorrect'>In the title tag.</li></ul>",
         step: 2
     },
     questionThree: {
-        questionText: "<h1> This is a question #3!</h1>",
-        answers: "<ul><li>1.Answer 1</li><li>2.Answer 2</li><li>3.Answer 3</li><li>4.Answer4</li></ul>",
+        questionText: "<h1> The external Javascript file must contain a script tag. </h1>",
+        answers: "<ul><li id = 'incorrect'>True</li><li id = 'correct'>False</li></ul>",
         step: 3
     },
     questionFour: {
-        questionText: "<h1> This is a question #4!</h1>",
-        answers: "<ul><li>1.Answer 1</li><li>2.Answer 2</li><li>3.Answer 3</li><li>4.Answer4</li></ul>",
+        questionText: "<h1>How do you declare an array?</h1>",
+        answers: "<ul><li id = 'incorrect'>var myArr = {};</li><li id = 'incorrect'>var myArr = new arr();</li><li id = 'correct'>var myArr = [];</li><li id = 'incorrect'>none of the above.</li></ul>",
         step: 4
     },
     questionFive: {
-        questionText: "<h1> This is a question #5!</h1>",
-        answers: "<ul><li>1.Answer 1</li><li>2.Answer 2</li><li>3.Answer 3</li><li>4.Answer4</li></ul>",
+        questionText: "<h1> How do you declare an object?</h1>",
+        answers: "<ul><li id = 'incorrect'>var myObj{};</li><li id = 'incorrect'>var myObj = [0];</li><li id = 'incorrect'>var obj = {}};</li><li id = 'correct'>var myObj = {};</li></ul>",
         step: 5
     }
 }
@@ -66,6 +69,7 @@ function displayQuestion(qCount){
                     inputSection.setAttribute("id","answerList");
                     startButtonEl.setAttribute("id","hiddenElement");
 
+
                     //exits loop when next question is found and displayed
                     break; 
                 }
@@ -89,19 +93,54 @@ function startTimer(count){
     },1000)
 }
 
+//
+function setAnswerListeners(){
+    //if successfully displayed, loop through answer list and add event listeners
+    if(answersList)
+    {
+        //loops through each li 
+        answersList.forEach((item)=>{
+            //adds listener to each li for each iteration
+            item.addEventListener('click', (event)=>{
+                //checks if li clicked is the correct answer
+                if(item.getAttribute('id') == "correct")
+                {
+                    console.log("you clicked on correct");
+                    //runs function to build and display the next questions
+                    displayQuestion(questionCounter);
+                    //sets counter to next question
+                    ++questionCounter
+                    //updates answers list with new li elements and calls this function again. 
+                    answersList = document.querySelectorAll("li");
+                    setAnswerListeners();
+                    
+                }else
+                {
+                    console.log("you clicked on incorrect!");
+
+                    //displays wrong answers ui alert and calls function to remove ten sec from timer
+                    resultSection.removeAttribute("id","hiddenElement");
+                    resultSection.innerHTML = incorectMessage;
+                    setTimeout(() => {
+                        resultSection.setAttribute("id","hiddenElement");
+                    }, 2000);
+                }
+            })
+        })
+    }
+}
+
 
 //runs quiz
 
 function startQuiz(){
-    startButtonEl.addEventListener("click", ()=>{
+    startButtonEl.addEventListener("click", (event)=>{
+        console.log(event);
         startTimer(timeCount);
         displayQuestion(questionCounter);
         ++questionCounter
-        //if(inputsection.getattr)
-            //set event listers to li/answers
-                //if wrong li with wa attr remove  10 sec
-                //else move  on
-
+        answersList = document.querySelectorAll("li");
+        setAnswerListeners();
     })
 }
 

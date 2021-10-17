@@ -54,3 +54,11 @@ li{
 #hiddenElement{
     display: none;
 }
+
+#answerMessage{
+    text-align: center;
+    width: 100%;
+    border-top: 5px dashed #FD746C;
+    padding-top: 8px;
+    color: #FD746C;
+}
