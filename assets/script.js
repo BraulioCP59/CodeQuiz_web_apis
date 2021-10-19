@@ -10,6 +10,7 @@ var answersList;
 
 //global variables
 var timeCount = 75;
+var interval;
 var questionCounter = 1;
 var incorectMessage = "<h3 id = 'answerMessage'> Wrong Answer Selected!</h3>";
 var correctMessage = "<h3 = 'answerMessage'> Correct Answer Selected!</h3>";
@@ -82,15 +83,27 @@ function displayQuestion(qCount){
 
 //starts timer
 function startTimer(count){
-    var interval = setInterval(()=>{
+    //clears any active timers
+    window.clearInterval(interval);
+
+    //creates a new interval using the given count/time value
+    interval = setInterval(()=>{
         count --;
-        if(count == 0)
+        if(count <= 0)
         {
+            //kills timer when it reaches 0
             window.clearInterval(interval);
+            timerEl.textContent = 0;
+        }else
+        {
+            //sets current count value to timer element on page every second.
+            timerEl.textContent = count;
         }
-        timerEl.textContent = "Time: " + count;
+        
         
     },1000)
+    
+
 }
 
 //
@@ -124,6 +137,10 @@ function setAnswerListeners(){
                     setTimeout(() => {
                         resultSection.setAttribute("id","hiddenElement");
                     }, 2000);
+
+                    //reduces timer by ten sec as a penalty
+                    var newTime = timerEl.textContent - 10;
+                    startTimer(newTime);
                 }
             })
         })
