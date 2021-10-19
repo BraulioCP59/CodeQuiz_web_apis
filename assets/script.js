@@ -1,4 +1,5 @@
 //selectors
+var bodyEl = document.querySelector("body");
 var highScoreEl = document.querySelector("#highScoreLink");
 var timerEl = document.querySelector("#timer");
 var promptSection = document.querySelector("#promptSection");
@@ -36,17 +37,13 @@ var questions = {
         step: 4
     },
     questionFive: {
-        questionText: "<h1> How do you declare an object?</h1>",
+        questionText: "<h1 id = 'finalQuestion'> How do you declare an object?</h1>",
         answers: "<ul><li id = 'incorrect'>var myObj{};</li><li id = 'incorrect'>var myObj = [0];</li><li id = 'incorrect'>var obj = {}};</li><li id = 'correct'>var myObj = {};</li></ul>",
         step: 5
     }
 }
 
 //functions
-
-//function for deducting seconds
-
-//
 
 //funciton for displaying questions. deducts seconds if wrong answer chosen
 function displayQuestion(qCount){
@@ -94,6 +91,7 @@ function startTimer(count){
             //kills timer when it reaches 0
             window.clearInterval(interval);
             timerEl.textContent = 0;
+            gameOver();
         }else
         {
             //sets current count value to timer element on page every second.
@@ -104,6 +102,15 @@ function startTimer(count){
     },1000)
     
 
+}
+
+
+//displays game over page with score submission form
+function gameOver(){
+    bodyEl.innerHTML = "";
+    var gameOverTitleEl = document.createElement("h1");
+    gameOverTitleEl.innerHTML = "GAME OVER!";
+    bodyEl.appendChild(gameOverTitleEl);
 }
 
 //
@@ -119,13 +126,21 @@ function setAnswerListeners(){
                 if(item.getAttribute('id') == "correct")
                 {
                     console.log("you clicked on correct");
-                    //runs function to build and display the next questions
-                    displayQuestion(questionCounter);
-                    //sets counter to next question
-                    ++questionCounter
-                    //updates answers list with new li elements and calls this function again. 
-                    answersList = document.querySelectorAll("li");
-                    setAnswerListeners();
+                    //if final question was answered correctly
+                    var currentQuestion = document.querySelector('h1');
+                    if(currentQuestion.getAttribute('id') == "finalQuestion")
+                    {
+                        gameOver();
+                    }else
+                    {
+                        //runs function to build and display the next questions
+                        displayQuestion(questionCounter);
+                        //sets counter to next question
+                        ++questionCounter
+                        //updates answers list with new li elements and calls this function again. 
+                        answersList = document.querySelectorAll("li");
+                        setAnswerListeners();
+                    }
                     
                 }else
                 {
@@ -162,3 +177,5 @@ function startQuiz(){
 }
 
 startQuiz();
+
+
