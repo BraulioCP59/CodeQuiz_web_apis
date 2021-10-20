@@ -105,6 +105,42 @@ function startTimer(count){
 
 }
 
+//
+function viewScores(){
+    //load highscores from local storage
+    var scores = JSON.parse(localStorage.getItem("scores"));
+
+    bodyEl.innerHTML = "";
+    //
+    var scoresViewTitle = document.createElement("h1");
+    scoresViewTitle.innerHTML = "High Scores";
+    //
+    var highScoresList = document.createElement("ul");
+    for(var i = 0; i < scores.length; i++)
+    {
+        var scoreEntry = document.createElement("li");
+        scoreEntry.textContent = i+1 + ".)\t" + scores[i];
+        highScoresList.appendChild(scoreEntry);
+    }
+
+    //create div for button options
+    var buttonsDiv = document.createElement("div");
+    buttonsDiv.setAttribute("id", "buttons")
+
+    var backBtn = document.createElement("button");
+    backBtn.textContent = "Go Back";
+    buttonsDiv.appendChild(backBtn);
+
+    var clearBtn = document.createElement("button");
+    clearBtn.textContent = "Clear Highscores";
+    buttonsDiv.appendChild(clearBtn);
+
+    bodyEl.setAttribute("id","highScores");
+    bodyEl.appendChild(scoresViewTitle);
+    bodyEl.appendChild(highScoresList);
+    bodyEl.appendChild(buttonsDiv);
+
+}
 
 //displays game over page with score submission form
 function gameOver(){
@@ -116,7 +152,6 @@ function gameOver(){
     //
     var finalScore = document.createElement("p");
     finalScore.textContent = "Your Final Score is: " + timerEl.textContent;
-    finalScore.style.textAlign = null; 
 
     //
     var submitScoreForm = document.createElement("form");
@@ -126,6 +161,7 @@ function gameOver(){
     //
     var scoreTextFieldEl = document.createElement("input");
     scoreTextFieldEl.setAttribute("type", "text");
+    scoreTextFieldEl.setAttribute("id", "scoreFieldText");
 
     //
     var submitScoreBtnEl = document.createElement("input");
@@ -144,7 +180,23 @@ function gameOver(){
     mainEl.appendChild(gameOverTitleEl);
     mainEl.appendChild(finalScore);
     mainEl.appendChild(submitScoreForm);
+
+    //
+    submitScoreBtnEl.addEventListener("click", (event)=>{
+        event.preventDefault();
+        var scoreEntryString = scoreTextFieldEl.value + " - " + timerEl.textContent;
+
+        var scoresInStorage = JSON.parse(localStorage.getItem("scores"));
+        scoresInStorage.push(scoreEntryString);
+        localStorage.setItem("scores", JSON.stringify(scoresInStorage));
+
+        //calls function to display scores view
+        viewScores();
+
+    })
 }
+
+
 
 //
 function setAnswerListeners(){
@@ -200,6 +252,12 @@ function setAnswerListeners(){
 //runs quiz
 
 function startQuiz(){
+    if(!localStorage.getItem("scores"))
+    {
+        var scores = [];
+        localStorage.setItem("scores", JSON.stringify(scores));
+    }
+
     startButtonEl.addEventListener("click", (event)=>{
         console.log(event);
         startTimer(timeCount);
