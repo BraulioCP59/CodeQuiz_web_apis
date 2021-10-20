@@ -1,5 +1,6 @@
 //selectors
 var bodyEl = document.querySelector("body");
+var mainEl = document.querySelector("main");
 var highScoreEl = document.querySelector("#highScoreLink");
 var timerEl = document.querySelector("#timer");
 var promptSection = document.querySelector("#promptSection");
@@ -107,10 +108,42 @@ function startTimer(count){
 
 //displays game over page with score submission form
 function gameOver(){
-    bodyEl.innerHTML = "";
+    mainEl.innerHTML = "";
+    //
     var gameOverTitleEl = document.createElement("h1");
     gameOverTitleEl.innerHTML = "GAME OVER!";
-    bodyEl.appendChild(gameOverTitleEl);
+
+    //
+    var finalScore = document.createElement("p");
+    finalScore.textContent = "Your Final Score is: " + timerEl.textContent;
+    finalScore.style.textAlign = null; 
+
+    //
+    var submitScoreForm = document.createElement("form");
+    var scoreLabelEl = document.createElement("label");
+    scoreLabelEl.textContent = "Enter Initials: ";
+
+    //
+    var scoreTextFieldEl = document.createElement("input");
+    scoreTextFieldEl.setAttribute("type", "text");
+
+    //
+    var submitScoreBtnEl = document.createElement("input");
+    submitScoreBtnEl.setAttribute("type","submit");
+
+    //
+    submitScoreForm.appendChild(scoreLabelEl);
+    submitScoreForm.appendChild(scoreTextFieldEl);
+    submitScoreForm.appendChild(submitScoreBtnEl);
+
+    //
+    finalScore.appendChild(submitScoreForm);
+
+    //
+    mainEl.setAttribute("id", "gameOver");
+    mainEl.appendChild(gameOverTitleEl);
+    mainEl.appendChild(finalScore);
+    mainEl.appendChild(submitScoreForm);
 }
 
 //
@@ -130,6 +163,7 @@ function setAnswerListeners(){
                     var currentQuestion = document.querySelector('h1');
                     if(currentQuestion.getAttribute('id') == "finalQuestion")
                     {
+                        window.clearInterval(interval);
                         gameOver();
                     }else
                     {
