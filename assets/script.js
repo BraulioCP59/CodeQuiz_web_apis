@@ -8,6 +8,8 @@ var inputSection = document.querySelector("#inputSection");
 var resultSection = document.querySelector("#resultSection");
 var startButtonEl= document.querySelector("#startButton");
 var answersList;
+var goBackBtn;
+var clear;
 
 
 //global variables
@@ -93,6 +95,7 @@ function startTimer(count){
             window.clearInterval(interval);
             timerEl.textContent = 0;
             gameOver();
+
         }else
         {
             //sets current count value to timer element on page every second.
@@ -106,6 +109,23 @@ function startTimer(count){
 }
 
 //
+function clearScores(){
+    clear.addEventListener("click", ()=>{
+        localStorage.removeItem("scores");
+        viewScores();
+    })
+}
+
+//
+function goBack(){
+    goBackBtn.addEventListener("click", ()=>{
+        console.log("YOU CLICKED THE BACK BTN!!!!!!!!!!!!!!");
+        window.location.reload();
+    })
+}
+
+
+//
 function viewScores(){
     //load highscores from local storage
     var scores = JSON.parse(localStorage.getItem("scores"));
@@ -116,11 +136,15 @@ function viewScores(){
     scoresViewTitle.innerHTML = "High Scores";
     //
     var highScoresList = document.createElement("ul");
-    for(var i = 0; i < scores.length; i++)
+
+    if(scores != null)
     {
-        var scoreEntry = document.createElement("li");
-        scoreEntry.textContent = i+1 + ".)\t" + scores[i];
-        highScoresList.appendChild(scoreEntry);
+        for(var i = 0; i < scores.length; i++)
+        {
+            var scoreEntry = document.createElement("li");
+            scoreEntry.textContent = i+1 + ".)\t" + scores[i];
+            highScoresList.appendChild(scoreEntry);
+        }
     }
 
     //create div for button options
@@ -129,16 +153,24 @@ function viewScores(){
 
     var backBtn = document.createElement("button");
     backBtn.textContent = "Go Back";
+    backBtn.setAttribute("id","goBack");
     buttonsDiv.appendChild(backBtn);
 
     var clearBtn = document.createElement("button");
     clearBtn.textContent = "Clear Highscores";
+    clearBtn.setAttribute("id", "clear");
     buttonsDiv.appendChild(clearBtn);
 
     bodyEl.setAttribute("id","highScores");
     bodyEl.appendChild(scoresViewTitle);
     bodyEl.appendChild(highScoresList);
     bodyEl.appendChild(buttonsDiv);
+
+    clear = document.querySelector("#clear");
+    goBackBtn = document.querySelector("#goBack");
+
+    clearScores();
+    goBack();
 
 }
 
@@ -192,7 +224,6 @@ function gameOver(){
 
         //calls function to display scores view
         viewScores();
-
     })
 }
 
@@ -217,6 +248,7 @@ function setAnswerListeners(){
                     {
                         window.clearInterval(interval);
                         gameOver();
+
                     }else
                     {
                         //runs function to build and display the next questions
@@ -248,7 +280,6 @@ function setAnswerListeners(){
     }
 }
 
-
 //runs quiz
 
 function startQuiz(){
@@ -257,6 +288,10 @@ function startQuiz(){
         var scores = [];
         localStorage.setItem("scores", JSON.stringify(scores));
     }
+
+    highScoreEl.addEventListener("click", ()=>{
+        viewScores();
+    })
 
     startButtonEl.addEventListener("click", (event)=>{
         console.log(event);
